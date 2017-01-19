@@ -166,7 +166,6 @@ class SmartScrollView extends Component {
                 }
             }
 
-            console.log("NODE HANDLE", ReactNative.findNodeHandle(this[ref]), num);
             RCTUIManager.measureLayout(ReactNative.findNodeHandle(this[ref]), num, callback, callback);
         }, 0);
     }
