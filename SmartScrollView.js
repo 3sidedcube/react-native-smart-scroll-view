@@ -51,7 +51,7 @@ class SmartScrollView extends Component {
             this._focusField('input_' + this.props.forceFocusField)
         }
 
-        let listeners = [
+        const listeners = [
             Keyboard.addListener(Platform.OS == 'IOS' ? 'keyboardWillShow' : 'keyboardDidShow', this._keyboardWillShow),
             Keyboard.addListener(Platform.OS == 'IOS' ? 'keyboardWillHide' : 'keyboardDidHide', this._keyboardWillHide)
         ]
@@ -108,7 +108,7 @@ class SmartScrollView extends Component {
         this.setState({
             keyBoardUp: false
         });
-        this.refs._smartScroll && this.refs._smartScroll.scrollTo({y: 0});
+        this._smartScroll && this._smartScroll.scrollTo({y: 0});
     }
 
     _refCreator () {
@@ -138,7 +138,7 @@ class SmartScrollView extends Component {
             scrollPadding,
             onRefFocus
         } = this.props;
-        const num = ReactNative.findNodeHandle(this.refs._smartScroll);
+        const num = ReactNative.findNodeHandle(this._smartScroll);
         const strippedBackRef = ref.slice('input_'.length);
 
         setTimeout(() => {
@@ -154,18 +154,19 @@ class SmartScrollView extends Component {
 
                     const nextScrollPosition = (Y + H) - scrollWindowHeight + scrollPadding;
 
-                    this.refs._smartScroll.scrollTo({y: nextScrollPosition});
+                    this._smartScroll.scrollTo({y: nextScrollPosition});
                     this.setState({scrollPosition: nextScrollPosition });
 
                 } else if (py < 0) {
 
                     const nextScrollPosition = Y - scrollPadding;
 
-                    this.refs._smartScroll.scrollTo({y: nextScrollPosition});
+                    this._smartScroll.scrollTo({y: nextScrollPosition});
                     this.setState({ scrollPosition: nextScrollPosition});
                 }
             }
 
+            console.log("NODE HANDLE", ReactNative.findNodeHandle(this[ref]), num);
             RCTUIManager.measureLayout(ReactNative.findNodeHandle(this[ref]), num, callback, callback);
         }, 0);
     }
@@ -256,7 +257,7 @@ class SmartScrollView extends Component {
                     style={this.state.keyBoardUp ? { height: this.state.scrollWindowHeight } : styles.flex1}
                 >
                     <ScrollView
-                        ref = { '_smartScroll' }
+                        ref = { component => this._smartScroll=component }
                         automaticallyAdjustContentInsets = { false }
                         scrollsToTop = { false }
                         style = { styles.flex1 }
