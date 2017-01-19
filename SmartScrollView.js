@@ -13,6 +13,8 @@ import ReactNative, {
     Platform
 } from 'react-native';
 
+const RCTUIManager = require('NativeModules').UIManager;
+
 const { height: screenHeight } = Dimensions.get('window');
 const animations = {
     layout: {
@@ -106,7 +108,7 @@ class SmartScrollView extends Component {
         this.setState({
             keyBoardUp: false
         });
-        this._smartScroll && this._smartScroll.scrollTo({y: 0});
+        this.refs._smartScroll && this.refs._smartScroll.scrollTo({y: 0});
     }
 
     _refCreator () {
@@ -136,7 +138,7 @@ class SmartScrollView extends Component {
             scrollPadding,
             onRefFocus
         } = this.props;
-        const num = ReactNative.findNodeHandle(this._smartScroll);
+        const num = ReactNative.findNodeHandle(this.refs._smartScroll);
         const strippedBackRef = ref.slice('input_'.length);
 
         setTimeout(() => {
@@ -144,7 +146,7 @@ class SmartScrollView extends Component {
             onRefFocus(strippedBackRef);
             this.setState({focusedField: strippedBackRef})
 
-            this[ref].measureLayout(num, (X,Y,W,H) => {
+            const callback = (X,Y,W,H) => {
 
                 const py = Y - scrollPosition;
 
@@ -152,17 +154,19 @@ class SmartScrollView extends Component {
 
                     const nextScrollPosition = (Y + H) - scrollWindowHeight + scrollPadding;
 
-                    this._smartScroll.scrollTo({y: nextScrollPosition});
+                    this.refs._smartScroll.scrollTo({y: nextScrollPosition});
                     this.setState({scrollPosition: nextScrollPosition });
 
                 } else if (py < 0) {
 
                     const nextScrollPosition = Y - scrollPadding;
 
-                    this._smartScroll.scrollTo({y: nextScrollPosition});
+                    this.refs._smartScroll.scrollTo({y: nextScrollPosition});
                     this.setState({ scrollPosition: nextScrollPosition});
                 }
-            });
+            }
+
+            RCTUIManager.measureLayout(ReactNative.findNodeHandle(this[ref]), num, callback, callback);
         }, 0);
     }
 
@@ -224,58 +228,56 @@ class SmartScrollView extends Component {
             return React.cloneElement(element, smartProps)
         }
 
-    function recursivelyCheckAndAdd(children, i) {
-        return React.Children.map(children, (child, j) => {
-            if (child && child.props !== undefined) {
-                if (child.props.smartScrollOptions !== undefined) {
-                    return smartClone(child, ''+i+j);
-                } else if (child.props.children !== undefined) {
-                    return React.cloneElement(child, {key: i}, recursivelyCheckAndAdd(child.props.children, ''+i+j));
+        function recursivelyCheckAndAdd(children, i) {
+            return React.Children.map(children, (child, j) => {
+                if (child && child.props !== undefined) {
+                    if (child.props.smartScrollOptions !== undefined) {
+                        return smartClone(child, ''+i+j);
+                    } else if (child.props.children !== undefined) {
+                        return React.cloneElement(child, {key: i}, recursivelyCheckAndAdd(child.props.children, ''+i+j));
+                    } else {
+                        return React.cloneElement(child, {key: i});
+                    }
                 } else {
-                    return React.cloneElement(child, {key: i});
+                    return child
                 }
-            } else {
-                return child
-            }
-        })
-    }
+            })
+        }
 
-    const content = recursivelyCheckAndAdd(scrollChildren, '0');
+        const content = recursivelyCheckAndAdd(scrollChildren, '0');
 
-    console.log("HEIGHT", this.state.scrollWindowHeight);
-
-    return (
-        <View
-            ref={ component => this._container=component }
-            style={[scrollContainerStyle, this.props.style]}
-            onLayout={(e) => this._layout = e.nativeEvent.layout}
-        >
+        return (
             <View
-                style={this.state.keyBoardUp ? { height: this.state.scrollWindowHeight } : styles.flex1}
+                ref={ component => this._container=component }
+                style={[scrollContainerStyle, this.props.style]}
+                onLayout={(e) => this._layout = e.nativeEvent.layout}
             >
-                <ScrollView
-                    ref = { component => this._smartScroll=component }
-                    automaticallyAdjustContentInsets = { false }
-                    scrollsToTop = { false }
-                    style = { styles.flex1 }
-                    onScroll = { (event) => {
-                        this._updateScrollPosition(event)
-                        onScroll(event)
-                    }}
-                    scrollEventThrottle = { 16 }
-                    contentContainerStyle = { contentContainerStyle }
-                    contentInset = { contentInset }
-                    zoomScale = { zoomScale }
-                    showsVerticalScrollIndicator = { showsVerticalScrollIndicator }
-                    keyboardShouldPersistTaps = { true }
-                    bounces = { false }
+                <View
+                    style={this.state.keyBoardUp ? { height: this.state.scrollWindowHeight } : styles.flex1}
                 >
-                    {content}
-                </ScrollView>
+                    <ScrollView
+                        ref = { '_smartScroll' }
+                        automaticallyAdjustContentInsets = { false }
+                        scrollsToTop = { false }
+                        style = { styles.flex1 }
+                        onScroll = { (event) => {
+                            this._updateScrollPosition(event)
+                            onScroll(event)
+                        }}
+                        scrollEventThrottle = { 16 }
+                        contentContainerStyle = { contentContainerStyle }
+                        contentInset = { contentInset }
+                        zoomScale = { zoomScale }
+                        showsVerticalScrollIndicator = { showsVerticalScrollIndicator }
+                        keyboardShouldPersistTaps = { true }
+                        bounces = { false }
+                    >
+                        {content}
+                    </ScrollView>
+                </View>
             </View>
-        </View>
-    );
-  }
+        );
+    } 
 }
 
 const styles = StyleSheet.create({
