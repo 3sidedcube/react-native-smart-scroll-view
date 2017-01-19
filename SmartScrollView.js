@@ -118,14 +118,17 @@ class SmartScrollView extends Component {
 
     _focusField (ref) {
         const node = this[ref];
-        const {type} = node.props.smartScrollOptions;
 
-        switch(type) {
-            case 'text':
-                this[ref].focus();
-                break;
-            case 'custom':
-                this._focusNode(ref);
+        if (node) {
+            const {type} = node.props.smartScrollOptions;
+
+            switch(type) {
+                case 'text':
+                    this[ref].focus();
+                    break;
+                case 'custom':
+                    this._focusNode(ref);
+            }
         }
     }
 
