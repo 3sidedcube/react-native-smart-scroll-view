@@ -232,7 +232,8 @@ class SmartScrollView extends Component {
         }
 
         function recursivelyCheckAndAdd(children, i) {
-            return React.Children.map(children, (child, j) => {
+
+            const result = React.Children.map(children, (child, j) => {
                 if (child && child.props !== undefined) {
                     if (child.props.smartScrollOptions !== undefined) {
                         return smartClone(child, ''+i+j);
@@ -245,6 +246,9 @@ class SmartScrollView extends Component {
                     return child
                 }
             })
+
+            // If there is only one child return it rather than an array to avoid TouchableHighlight single child issue
+            return result.length === 1 ? result[0] : result;
         }
 
         const content = recursivelyCheckAndAdd(scrollChildren, '0');
@@ -272,7 +276,7 @@ class SmartScrollView extends Component {
                         contentInset = { contentInset }
                         zoomScale = { zoomScale }
                         showsVerticalScrollIndicator = { showsVerticalScrollIndicator }
-                        keyboardShouldPersistTaps = { true }
+                        keyboardShouldPersistTaps = { 'always' }
                         bounces = { false }
                     >
                         {content}
