@@ -76,7 +76,9 @@ class SmartScrollView extends Component {
     }
 
     componentWillUnmount() {
-        this._listeners.forEach((listener) => listener.remove());
+        if (this._listeners) {
+            this._listeners.forEach((listener) => listener.remove());
+        }
     }
 
     _findScrollWindowHeight(keyboardHeight){
