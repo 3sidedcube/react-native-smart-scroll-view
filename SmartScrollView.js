@@ -103,6 +103,11 @@ class SmartScrollView extends Component {
         this.setState({
             scrollWindowHeight,
             keyBoardUp: true
+        }, () => {
+            if (this.nodeToFocus) {
+                this._focusNode(this.nodeToFocus);
+                this.nodeToFocus = undefined;
+            }
         })
     }
 
@@ -208,7 +213,7 @@ class SmartScrollView extends Component {
 
                     smartProps.onFocus = () => {
                         smartProps.onFocus = element.props.onFocus && element.props.onFocus();
-                        this._focusNode(ref)
+                        this.nodeToFocus = ref;
                     };
 
                     if (smartScrollOptions.moveToNext === true) {
@@ -270,6 +275,7 @@ class SmartScrollView extends Component {
                         scrollsToTop = { false }
                         style = { styles.flex1 }
                         onScroll = { (event) => {
+                            console.log("ON SCROLL!", event);
                             this._updateScrollPosition(event)
                             onScroll(event)
                         }}
