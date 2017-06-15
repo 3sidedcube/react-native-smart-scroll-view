@@ -120,7 +120,15 @@ class SmartScrollView extends Component {
 
     _refCreator () {
         const refs = arguments;
-        return component => Object.keys(refs).forEach(i => this[refs[i]] = component);
+        return component => {
+            Object.keys(refs).forEach(i => {
+                if (typeof refs[i] === 'function') {
+                    refs[i](component);
+                } else {
+                    this[refs[i]] = component;
+                }
+            })
+        }
     }
 
     _focusField (ref) {
@@ -207,7 +215,7 @@ class SmartScrollView extends Component {
 
                 const ref = 'input_' + inputIndex;
 
-                smartProps.ref = this._refCreator(ref, smartScrollOptions.scrollRef && 'input_' + smartScrollOptions.scrollRef);
+                smartProps.ref = this._refCreator(ref, smartScrollOptions.scrollRef && 'input_' + smartScrollOptions.scrollRef, element.props.smartRef);
 
                 if (smartScrollOptions.type === 'text') {
 
