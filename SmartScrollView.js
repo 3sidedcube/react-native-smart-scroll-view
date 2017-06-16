@@ -234,8 +234,8 @@ class SmartScrollView extends Component {
                         }
 
                         smartProps.blurOnSubmit = false;
-                        smartProps.onSubmitEditing = smartScrollOptions.onSubmitEditing ?
-                        () => smartScrollOptions.onSubmitEditing(focusNextField) :
+                        smartProps.onSubmitEditing = element.props.onSubmitEditing ?
+                        (event) => element.props.onSubmitEditing(event, focusNextField) :
                         focusNextField
                     }
                 }
