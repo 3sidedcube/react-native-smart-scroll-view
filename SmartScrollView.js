@@ -293,7 +293,7 @@ class SmartScrollView extends Component {
                         zoomScale = { zoomScale }
                         showsVerticalScrollIndicator = { showsVerticalScrollIndicator }
                         keyboardShouldPersistTaps = { 'always' }
-                        bounces = { false }
+                        bounces = { this.props.bounces }
                     >
                         {content}
                     </ScrollView>
@@ -310,6 +310,7 @@ const styles = StyleSheet.create({
 });
 
 SmartScrollView.propTypes = {
+    bounces: PropTypes.bool,
     forceFocusField: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
     scrollContainerStyle: View.propTypes.style,
     contentContainerStyle: View.propTypes.style,
@@ -322,6 +323,7 @@ SmartScrollView.propTypes = {
 };
 
 SmartScrollView.defaultProps = {
+    bounces: false,
     scrollContainerStyle: styles.flex1,
     scrollPadding: 5,
     zoomScale: 1,
