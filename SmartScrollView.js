@@ -36,9 +36,8 @@ class SmartScrollView extends Component {
 
     constructor(){
         super();
-        this.state = {
-            scrollPosition : 0,
-        }
+        this.scrollPosition = 0;
+        this.state = {};
         this._refCreator           = this._refCreator.bind(this);
         this._focusNode            = this._focusNode.bind(this);
         this._keyboardWillHide     = this._keyboardWillHide.bind(this);
@@ -149,9 +148,9 @@ class SmartScrollView extends Component {
 
     _focusNode (ref) {
         const {
-            scrollPosition,
             scrollWindowHeight,
         } = this.state;
+        const scrollPosition = this.scrollPosition;
         const {
             scrollPadding,
             onRefFocus
@@ -173,14 +172,14 @@ class SmartScrollView extends Component {
                     const nextScrollPosition = (Y + H) - scrollWindowHeight + scrollPadding;
 
                     this._smartScroll.scrollTo({y: nextScrollPosition});
-                    this.setState({scrollPosition: nextScrollPosition });
+                    this.scrollPosition = nextScrollPosition;
 
                 } else if (py < 0) {
 
                     const nextScrollPosition = Y - scrollPadding;
 
                     this._smartScroll.scrollTo({y: nextScrollPosition});
-                    this.setState({ scrollPosition: nextScrollPosition});
+                    this.scrollPosition = nextScrollPosition;
                 }
             }
 
@@ -189,10 +188,12 @@ class SmartScrollView extends Component {
     }
 
     _updateScrollPosition (event) {
-        this.setState({ scrollPosition: event.nativeEvent.contentOffset.y });
+        this.scrollPosition = event.nativeEvent.contentOffset.y;
     }
 
     render () {
+
+        console.log("RENDER!");
 
         const {
             children: scrollChildren,
@@ -283,7 +284,6 @@ class SmartScrollView extends Component {
                         scrollsToTop = { false }
                         style = { styles.flex1 }
                         onScroll = { (event) => {
-                            console.log("ON SCROLL!", event);
                             this._updateScrollPosition(event)
                             onScroll(event)
                         }}
