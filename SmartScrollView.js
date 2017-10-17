@@ -1,6 +1,5 @@
 import React, {
     Component,
-    PropTypes,
 } from 'react';
 
 import ReactNative, {
@@ -12,6 +11,8 @@ import ReactNative, {
     LayoutAnimation,
     Platform
 } from 'react-native';
+
+import PropTypes from "prop-types";
 
 const RCTUIManager = require('NativeModules').UIManager;
 
