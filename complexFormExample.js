@@ -2,7 +2,6 @@
 
 import React, {
   Component,
-  PropTypes,
   View,
   TextInput,
   Text,
@@ -14,6 +13,7 @@ import React, {
 import SmartScrollView from 'react-native-smart-scroll-view';
 
 import Button from './helpers/_button.js';
+import PropTypes from "prop-types";
 
 const textFields = [
   { ref: 'title', keyboardType: 'default', placeholder: 'TITLE', secureTextEntry: false, autoCapitalise: true },
