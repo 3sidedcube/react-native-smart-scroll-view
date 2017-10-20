@@ -9,7 +9,8 @@ import ReactNative, {
     Keyboard,
     Dimensions,
     LayoutAnimation,
-    Platform
+    Platform,
+    ViewPropTypes
 } from 'react-native';
 
 import PropTypes from "prop-types";
@@ -313,8 +314,8 @@ const styles = StyleSheet.create({
 SmartScrollView.propTypes = {
     bounces: PropTypes.bool,
     forceFocusField: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-    scrollContainerStyle: View.propTypes.style,
-    contentContainerStyle: View.propTypes.style,
+    scrollContainerStyle: ViewPropTypes.style,
+    contentContainerStyle: ViewPropTypes.style,
     zoomScale: PropTypes.number,
     showsVerticalScrollIndicator: PropTypes.bool,
     contentInset: PropTypes.object,
