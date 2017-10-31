@@ -193,8 +193,6 @@ class SmartScrollView extends Component {
 
     render () {
 
-        console.log("RENDER!");
-
         const {
             children: scrollChildren,
             contentContainerStyle,
